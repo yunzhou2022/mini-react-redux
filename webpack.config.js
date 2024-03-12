@@ -17,12 +17,12 @@ module.exports = {
   mode: isProd ? "production" : "development",
 
   externals: {
-    react: "react",
-    redux: "redux",
+    react: "React",
+    redux: "Redux",
   },
   output: {
     filename: isProd ? "mini-react-redux.min.js" : "mini-react-redux.js",
-    library: "mini-react-redux",
+    library: "MiniReactRedux",
     libraryTarget: "umd",
   },
 };

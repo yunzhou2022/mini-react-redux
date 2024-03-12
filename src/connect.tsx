@@ -1,5 +1,5 @@
 import { React } from "./react";
-import { Dispatch } from "redux";
+import { Dispatch, Store } from "redux";
 import { Context } from "./Provider";
 
 interface ImapStateToProps {
@@ -11,20 +11,22 @@ interface ImapDispatchToProps {
 }
 
 export const connect = (
-  mapStateToProps: ImapStateToProps,
-  mapDispatchToProps: ImapDispatchToProps
+  mapStateToProps: ImapStateToProps = (state) => ({}),
+  mapDispatchToProps: ImapDispatchToProps = (dispatch) => ({ dispatch })
 ) => {
   return (WillBeWrappedComponent: React.ComponentType) => {
+    function getStateProps(store: Store) {
+      return mapStateToProps(store.getState());
+    }
     return (props: Record<string, unknown>) => {
       const store = React.useContext(Context);
       const [childProps, setChildProps] = React.useState<
         Record<string, unknown>
-      >({});
+      >(getStateProps(store));
 
       React.useEffect(() => {
         return store.subscribe(() => {
-          const allState = store.getState();
-          const selectedState = mapStateToProps(allState);
+          const selectedState = getStateProps(store);
 
           if (diff(childProps, selectedState)) {
             setChildProps(selectedState);
